@@ -1,37 +1,51 @@
-#include "Service.h"
-#include "Costs.h"
+#include"Service.h"
 
-void Service::create_cost(int id, int day, int sum, char* type)
+Service::Service()
 {
-	Costs c(id, day, sum, type);
-	this->r.create(c);
-}	
-
-Costs* Service::read_cost()
-{
-	return this->r.read();
 }
 
-void Service::update_cost(int id, int day, int sum, char* type,int new_id, int new_day, int new_sum, char* new_type)
+Service::Service(Repo& repo)
 {
-	Costs c1(id, day, sum, type);
-	Costs c2(new_id, new_day, new_sum, new_type);
-	
-	c1 = c2;
+	this->repo = repo;
 }
 
-void Service::delete_cost(int id)
+Service::~Service()
 {
-	for( int i=0 ; i<r.get_size ; i++)
-		if (id == r.read()[i].get_id)
-		{
-			for (int j = i + 1; j < r.get_size; j++)
-			{
-				Costs aux = r.read()[j];
-				r.read()[j] = r.read()[j-1];
-				r.read[j - 1] = aux;
-			}
-			i = r.get_size;
-		}
-	r.get_size--;
+}
+
+int Service::noExpenses()
+{
+	return this->repo.noExpenses();
+}
+
+
+void Service::addExpense(int id, int day, int sum, const char* type)
+{
+	this->repo.addExpense(Expense(id, day, sum, type));
+}
+
+Expense Service::getExpense(int id)
+{
+	return this->repo.getExpense(id);
+}
+
+vector<Expense> Service::getExpenses()
+{
+	return this->repo.getExpenses();
+}
+
+void Service::updateExpense(int id, int newDay, int newSum, const char* newType)
+{
+	this->repo.updateExpense(id, Expense(id, newDay, newSum, newType));
+}
+
+void Service::deleteExpense(int id)
+{
+	this->repo.deleteExpense(id);
+}
+
+Service& Service::operator =(const Service& e)
+{
+	this->repo = e.repo;
+	return*this;
 }

@@ -1,48 +1,49 @@
-#include "Repo.h"
-#include <cstddef>
+#include"Repo.h"
 
 Repo::Repo()
-{
-	this->n = 0;
-}
+{}
 
 Repo::~Repo()
+{}
+
+int Repo::noExpenses()
 {
-	this->n = 0;
+	return this->expenses.size();
 }
 
-int Repo::get_size()
+void Repo::addExpense(Expense e)
 {
-	return this->n;
-}
-void Repo::create (Costs c)
-{
-	this->cost[this->n++] = c;
-}
-Costs* Repo::read()
-{
-	return this->cost;
+	this->expenses.push_back(e);
 }
 
-void Repo::update(Costs c, Costs new_c)
+Expense Repo::getExpense(int id)
 {
-	c = new_c;
+	vector<Expense> ::iterator it;
+	for (it = this->expenses.begin(); !(it == this->expenses.end()); it++)
+		if ((*it).getId() == id)
+			return *it;
 }
 
-void del(int id)
+vector<Expense> Repo::getExpenses()
 {
-	for (int i = 0; i < n; i++)
-		if (id == cost[i].get_id)
+	return this->expenses;
+}
+
+void Repo::updateExpense(int id, const Expense& newExpense)
+{
+	vector<Expense> ::iterator it;
+	for (it = this->expenses.begin(); !(it == this->expenses.end()); it++)
+		if ((*it).getId() == id)
+			*it = newExpense;
+}
+
+void Repo::deleteExpense(int id)
+{
+	vector<Expense> ::iterator it;
+	for (it = this->expenses.begin(); !(it == this->expenses.end()); it++)
+		if ( (*it).getId() == id )
 		{
-			for (int j = i + 1; j < r.get_size; j++)
-			{
-				Costs aux = r.read()[j];
-				r.read()[j] = r.read()[j - 1];
-				r.read[j - 1] = aux;
-			}
-			i = r.get_size;
+			this->expenses.erase(it);
+			break;
 		}
-	r.get_size--;
-	
-
 }

@@ -1,5 +1,5 @@
 #pragma once
 
-void test_costs();
-void test_repo_costs();
-void test_service_costs();
+void test_expense();
+void test_repo();
+void test_service();

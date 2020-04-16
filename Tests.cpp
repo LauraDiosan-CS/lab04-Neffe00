@@ -1,94 +1,104 @@
-#include "Tests.h"
-#include "Costs.h"
-#include "Repo.h"
-#include "Service.h"
+#include"Tests.h"
 
-#include <string.h>
-#include <cassert>
-#include <iostream>
-#include <assert.h>
+#include"Service.h"
+#include"Expense.h"
+#include"Repo.h"
 
-void test_costs()
+#include<assert.h>
+
+#include<iostream>
+using namespace std;
+
+void test_expense()
 {
-	char* type_1 = new char[10];
-	strcpy_s(type_1, strlen("internet") + 1, "internet");
-	Costs c(1, 5, 50, type_1);
-	//getteri
-	assert(c.get_id == 1);
-	assert(c.get_day() == 5);
-	assert(c.get_sum() == 50);
-	assert(strcmp(c.get_type(), "internet") == 0);
-	
-	//setteri
-	c.set_id(2);
-	c.set_day(6);
-	c.set_sum(100);
-	char* type_2 = new char[10];
-	strcpy_s(type_2, strlen("haine") + 1, "haine");
-	c.set_type(type_2);
-	assert(c.get_id == 2);
-	assert(c.get_day() == 6);
-	assert(c.get_sum() == 100);
-	assert(strcmp(c.get_type(), "haine") == 0);
+	Expense e1(1, 1, 50, "internet");
+	assert(e1.getId() == 1);
+	assert(e1.getDay() == 1);
+	assert(e1.getSum() == 50);
+	assert(strcmp(e1.getType(), "internet") == 0);
 
-	// =
-	Costs c2 = c;
-	assert(c2.get_day() == 6);
-	assert(c2.get_sum() == 100);
-	assert(strcmp(c2.get_type(), "haine") == 0);
-	assert(c == c2);
 
-	cout << "Testele pentru Costs sunt ok!\n";
+	Expense e2;
+	e2.setId(2);
+	e2.setDay(2);
+	e2.setSum(100);
+	e2.setType("mancare");
+	assert(e2.getId() == 2);
+	assert(e2.getDay() == 2);
+	assert(e2.getSum() == 100);
+	assert(strcmp(e2.getType(), "mancare") == 0);
+
+	//cout << e1 << e2;
+
+	assert(!(e1 == e2));
+	e1 = e2;
+	assert(e1 == e2);
+
+	cout << "Expense tests are good" << endl;
 }
 
-void test_repo_costs()
+void test_repo()
 {
-	char* type_1 = new char[10];
-	strcpy_s(type_1, strlen("Internet") + 1, "Internet");
-	Costs c1(1, 5, 50, type_1);
+	Repo repo;
 
-	char* type_2 = new char[10];
-	strcpy_s(type_2, strlen("Haine") + 1, "Haine");
-	Costs c2(2, 6, 75, type_2);
+	Expense e1(1, 1, 50, "internet");
+	Expense e2(2, 2, 100, "mancare");
 
+	repo.addExpense(e1);
+	repo.addExpense(e2);
 
-	Repo repo_costs;
-	repo_costs.create(c1);
-	repo_costs.create(c2);
+	/*vector<Expense> expenses = repo.getExpenses();
+	vector<Expense>::iterator it;
+	for (it = expenses.begin(); it != expenses.end(); it++)
+		cout << *it;*/
 
-	assert(repo_costs.get_size() == 2);
-	assert(repo_costs.read()[0] == c1);
-	assert(repo_costs.read()[1] == c2);
-	cout << "Testele pentru Repo Costs sunt OK!\n";
+	assert(repo.getExpense(1)==e1);
+	assert(repo.getExpense(2)==e2);
+	assert(repo.noExpenses() == 2);
+	
+	Expense e3(1, 3, 200, "haine");
+	repo.updateExpense(1, e3);
+	
+	assert(repo.getExpense(1) == e3);
+	
+	repo.deleteExpense(1);
+	repo.deleteExpense(2);
+	assert(repo.noExpenses() == 0);
+
+	
+	cout << "Repo tests are good" << endl;
 }
 
-
-void test_service_costs()
+void test_service()
 {
-	char* type_1 = new char[10];
-	strcpy_s(type_1, strlen("Internet") + 1, "Internet");
-	Costs c1(1, 5, 50, type_1);
+	Repo repo;
+	Service service(repo);
 
-	char* type_2 = new char[10];
-	strcpy_s(type_2, strlen("Haine") + 1, "Haine");
-	Costs c2(2, 6, 75, type_2);
+	service.addExpense(1, 1, 50, "internet");
+	service.addExpense(2, 2, 100, "mancare");
+	assert(service.noExpenses() == 2);
 
-	Service service;
+	/*vector<Expense> expenses = service.getExpenses();
+	vector<Expense>::iterator it;
+	for (it = expenses.begin(); it != expenses.end(); it++)
+		cout << *it;*/
 
-	char* type_1 = new char[10];
-	strcpy_s(type_1, strlen("Internet") + 1, "Internet");
-	
-	service.create_cost(1, 5, 10, type_1);
-	
-	char* type_2 = new char[10];
-	strcpy_s(type_2, strlen("haine") + 1, "haine");
 
-	service.update_cost(1, 5, 10, type_1,1, 6, 20, type_2);
-	service.delete_cost(1);
+	Expense e1(1, 1, 50, "internet");
+	Expense e2(2, 2, 100, "mancare");
+	assert(service.getExpense(1) == e1);
+	assert(service.getExpense(2) == e2);
 
-	assert(service.read_cost()[0] == c1);
-	assert(service.read_cost()[1] == c2);
+	Expense e3(1, 3, 200, "haine");
+	service.updateExpense(1, 3, 200, "haine");
+	assert(service.getExpense(1) == e3);
 
-	cout << "Testele pentru Service Costs sunt OK!\n";
+	service.deleteExpense(1);
+	service.deleteExpense(2);
+	assert(service.noExpenses() == 0);
+
+
+	cout << "Repo tests are good" << endl;
+
 
 }
